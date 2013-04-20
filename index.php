@@ -67,6 +67,7 @@ if ($user_id) {
   $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
   
   $allEvents = idx($facebook->api('/me/events'), 'data', array());
+  print_r($allEvents);
   
   /*
   countAttendance (&$event_id) {
