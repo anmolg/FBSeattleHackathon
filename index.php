@@ -64,12 +64,9 @@ if ($user_id) {
   
   foreach ($allEvents as $events) {
 	$eventID = idx($events, 'id');
-	//print_r($eventID);
 	$individualEvent = idx($facebook->api('/' . $eventID . '/attending'), 'data', array());
-	//print_r($individualEvent);
 	$countEvent = count($individualEvent);
-	print_r($countEvent);
-  }
+  } 
   
   /*
   countAttendance (&$event_id) {
@@ -165,6 +162,7 @@ $app_name = idx($app_info, 'name', '');
 
     <title><?php echo he($app_name); ?></title>
     <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/my.css" media="Screen" type="text/css" />
     <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
 
     <!--[if IEMobile]>
@@ -312,28 +310,40 @@ data to your  -->
       </div>
       <?php } ?>
 
-      <div class="list">
-        <h3>A few of your friends</h3>
-        <ul class="friends">
-          <?php
-            foreach ($friends as $friend) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($friend, 'id');
-              $name = idx($friend, 'name');
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
+    <div id="wrap">
+
+      <div id="friendcolumn">
+
+        <div class="list">
+          <h3>A few of your friends</h3>
+          <ul class="friends">
+            <?php
+              foreach ($friends as $friend) {
+                // Extract the pieces of info we need from the requests above
+                $id = idx($friend, 'id');
+                $name = idx($friend, 'name');
+            ?>
+            <li>
+              <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+                <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+                <?php echo he($name); ?>
+              </a>
+            </li>
+            <?php
+              }
+            ?>
+          </ul>
+        </div>
+
       </div>
 
+      <div id="eventcolumn">
+        <p>Events will be here!</p>
+      </div>
 
+    </div>
+
+<!-- 
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -504,6 +514,6 @@ data to your  -->
       </ul>
     </section>
 
-
+-->
   </body>
 </html>
