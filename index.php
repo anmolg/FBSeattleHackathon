@@ -320,7 +320,7 @@ data to your  -->
         </ul>
       </div>
 
-      <div class="list inline">
+      <div class="list">
         <h3>Events</h3>
         <ul class="events">
           <?php
