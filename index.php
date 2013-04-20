@@ -285,7 +285,7 @@ data to your  -->
       </div>
       <?php } ?>
 
-<!-- /*
+
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -386,16 +386,18 @@ data to your  -->
         <h3>Things you like</h3>
         <ul class="things">
           <?php
-            foreach ($friends_attending_event as $frd) {
+            foreach ($attending_people_for_picked_event as $person) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($frd, 'uid');
+				$id = idx($person, 'id');
+				$name = idx($person, 'name');
 
               // This display's the object that the user liked as a link to
               // that object's page.
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <?php echo test; ?>
+				<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+              <?php echo he($name); ?>
             </a>
           </li>
           <?php
@@ -458,6 +460,6 @@ data to your  -->
       </ul>
     </section>
 
-  */ -->
+
   </body>
 </html>
