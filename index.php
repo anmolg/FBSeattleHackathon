@@ -139,7 +139,7 @@ if ($user_id) {
   // using this app
   $app_using_friends = $facebook->api(array(
     'method' => 'fql.query',
-    'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
+    'query' => 'SELECT uid as id, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
 ));
   print_r ($app_using_friends);
 }
