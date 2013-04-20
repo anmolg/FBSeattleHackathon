@@ -81,6 +81,21 @@ if ($user_id) {
 	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
 	//print_r ($friends);		 
 	
+	$_attending = idx($facebook->api('/me/friends'), 'data', array());
+	$_attendingMale = 0;
+	$_attendingFemale = 0;
+	foreach ($_attending as $friendse) {
+		$id = idx($friendse, 'id');
+		$friend_id = idx($facebook->api('/' . $id), 'data', array());
+		$gender = idx($friend_id, 'gender');
+		if ($gender == "male") {
+			$_attendingMale = $_attendingMale + 1;
+		}
+		if ($gender == "female") {
+			$_attendingFemale = $_attendingFemale + 1;
+		}
+	}
+	print_r($_attending_male);
 
   // And this returns 16 of your photos.
   $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
