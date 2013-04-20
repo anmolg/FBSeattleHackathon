@@ -109,7 +109,8 @@ if ($user_id) {
 	}
 
   // And this returns 16 of your photos.
-  $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
+	$events = idx($facebook->api('/me/events?fields=picture,name&type=attending'), 'data', array());
+	print_r ($events);
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
@@ -189,7 +190,7 @@ data to your  -->
               if (response != null) {
                 logResponse(response);
               }
-            }
+			}
           );
         });
 
@@ -329,21 +330,23 @@ data to your  -->
         </ul>
       </div>
 
-      <div class="list inline">
-        <h3>Recent photos</h3>
-        <ul class="photos">
+      <div class="list">
+        <h3>Events</h3>
+        <ul class="events">
           <?php
-            $i = 0;
-            foreach ($photos as $photo) {
+            foreach ($events as $event) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($photo, 'id');
-              $picture = idx($photo, 'picture');
-              $link = idx($photo, 'link');
-
-              $class = ($i++ % 4 === 0) ? 'first-column' : '';
+              $id = idx($event, 'id');
+			  $name = idx($event, 'name');
+			  $picture_array = idx($event, 'picture');
+			  $picture_data = idx($picture_array, 'data');
+			  $picture_url = idx($picture_data, 'url');
           ?>
-          <li style="background-image: url(<?php echo he($picture); ?>);" class="<?php echo $class; ?>">
-            <a href="<?php echo he($link); ?>" target="_top"></a>
+          <li>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+			<img src="<?php echo he($url) ?>" alt="<?php echo he($name); ?>">
+              <?php echo he($name); ?>
+            </a>
           </li>
           <?php
             }
@@ -363,8 +366,8 @@ data to your  -->
               // that object's page.
           ?>
           <li>
-			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">i
-              <?php echo he($name); ?>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+              <?php echo test; ?>
             </a>
           </li>
           <?php
