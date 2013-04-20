@@ -57,7 +57,7 @@ if ($user_id) {
   
 
   // This fetches 4 of your friends.
-  $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
+  $allFriends = idx($facebook->api('/me/friends'), 'data', array());
   $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
   
   $allEvents = idx($facebook->api('/me/events'), 'data', array());
@@ -322,6 +322,7 @@ data to your  -->
           ?>
         </ul>
       </div>
+	  
 
 <!-- /*
     <header class="clearfix">
