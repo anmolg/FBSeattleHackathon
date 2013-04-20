@@ -386,16 +386,12 @@ data to your  -->
       </div>
 
 	 <div class="list">
-        <h3>Things you like</h3>
+        <h3>Attendees to the event</h3>
         <ul class="things">
           <?php
             foreach ($attending_people_for_picked_event as $person) {
-              // Extract the pieces of info we need from the requests above
 				$id = idx($person, 'id');
 				$name = idx($person, 'name');
-
-              // This display's the object that the user liked as a link to
-              // that object's page.
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
