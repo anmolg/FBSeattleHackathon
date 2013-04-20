@@ -355,8 +355,8 @@ data to your  -->
               // that object's page.
           ?>
           <li>
-			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">i
-              <?php echo he($name); ?>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+              <?php echo test; ?>
             </a>
           </li>
           <?php
