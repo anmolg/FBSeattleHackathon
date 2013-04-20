@@ -332,6 +332,7 @@ data to your  -->
 			  $picture_array = idx($event, 'picture');
 			  $picture_data = idx($picture_array, 'data');
 			  $picture_url = idx($picture_data, 'url');
+			  print_r ($picture_url);
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
