@@ -15,3 +15,14 @@ background: #FFF;
 	margin: 0px;
 	float:right;
 }
+
+#eventdetails {
+	height: 25px;
+	width: 900px;
+	margin: 0px;
+	padding: 25px 0;
+}
+
+#clear{
+	clear:both;
+}

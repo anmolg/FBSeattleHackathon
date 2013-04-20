@@ -54,6 +54,7 @@ if ($user_id) {
     }
   }
 
+  $my_id = idx($basic, 'id');
   
 
   // This fetches 4 of your friends.
@@ -68,19 +69,6 @@ if ($user_id) {
 	$countEvent = count($individualEvent);
   } 
   
-  /*
-  countAttendance (&$event_id) {
-	$individualEvent = idx($facebook->api('/'. $event_id), 'data', array();
-	return count($individualEvent);
-  }
-  
-  
-  
-  foreach ($allEvents as $events) {
-	print_r(countAttendance($events));
-  }
-  */
-  
   $friend_id = 0;
     foreach ($friendlists as $friendk) {
               // Extract the pieces of info we need from the requests above
@@ -89,8 +77,6 @@ if ($user_id) {
 			  
 			  if ($name == "Close Friends") {
 				  $friend_id = $id;
-				//echo $friend_id;
-				//print_r ($friend_id);
 				}
 	}			
 					
@@ -100,24 +86,9 @@ if ($user_id) {
 	  $id = idx($frd, 'id');
 	  $close_friends[] = $id;
   }	 
-	
-	$_attending = idx($facebook->api('/me/friends?limit=50'), 'data', array());
-	$_attendingMale = 0;
-	$_attendingFemale = 0;
-	
-	foreach ($_attending as $friendse) {
-		$id = idx($friendse, 'id');
-		$gender = idx($facebook->api('/' . $id), 'gender');
-		if ($gender == "male") {
-			$_attendingMale = $_attendingMale + 1;
-		}
-		if ($gender == "female") {
-			$_attendingFemale = $_attendingFemale + 1;
-		}
-	}
 
 	// This returns the events you are attending
-	$events = idx($facebook->api('/me/events?fields=picture,name&type=attending'), 'data', array());
+	$events = idx($facebook->api('/me/events?type=attending'), 'data', array());
 
 	// Get the input from user which events to choose
 	// for testing, right now it uses the first event
@@ -130,7 +101,6 @@ if ($user_id) {
 	  $id = idx($person, 'id');
 	  $attending_people_ids_for_picked_event[] = $id;
 	}	 
-	print_r($attending_people_ids_for_picked_event);
 
 	// Get friends who are attending this particular event
 	$friends_attending_event = $facebook->api(array(
@@ -174,22 +144,19 @@ if ($user_id) {
 
 	// Remove close_friends from the list of potential friends, to get ids of the potential friends, use array_keys()
 	$potential_friends_ids = array_keys($potential_friends);
-	//print_r($potential_friends_ids);
 	foreach( $potential_friends_ids as $pfi ) {
-		if (!in_array($pfi, $close_friends)) {
+		if (!in_array($pfi, $close_friends) && $pfi != $my_id) {
 			$potential_friends_who_are_not_friends_already[$pfi] = $potential_friends[$pfi];
 		}
 	}
-	//print_r($potential_friends_who_are_not_friends_already);
-				    
-	//$potential_friends_who = array_keys($potential_friends_who_are_not_friends_already);
-				
-	foreach ($potential_friends_who_are_not_friends_already as $key => $value) {
-		// Extract the pieces of info we need from the requests above
-		//$id = $potential_friends_who_are_not_friends_already[$x];
-		print_r ($key);
-    }
-
+	if ( is_null($potential_friends_who_are_not_friends_already) )
+	{
+		$potential_friends_ids_who_are_not_friends_already = array();
+	}
+	else
+	{
+		$potential_friends_ids_who_are_not_friends_already = array_keys($potential_friends_who_are_not_friends_already);
+	}
 
 
   // Here is an example of a FQL call that fetches all of your friends that are
@@ -364,10 +331,11 @@ data to your  -->
 
     <div id="wrap">
 
+      <!-- FRIENDS -->
       <div id="friendcolumn">
 
         <div class="list">
-          <h3>A few of your friends</h3>
+          <h3>Your Close Friends</h3>
           <ul class="friends">
             <?php
               foreach ($friends as $friend) {
@@ -389,20 +357,43 @@ data to your  -->
 
       </div>
 
+      <!-- EVENTS -->
       <div id="eventcolumn">
+		<h3>People you should meet more!</h3>
+			<?php
+				if ( !is_null($potential_friends_who_are_not_friends_already) ) {
+					foreach ($potential_friends_who_are_not_friends_already as $key => $value) {
+						$id = $key;
+							?>
+							 
+							<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+							<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+							</a>
+							<?php 
+					}
+				}
+			?>
         <p>Events will be here!</p>
 	        <ul class="events">
-          <?php
+<?php
+if (!is_null($events)) {
             foreach ($events as $event) {
               // Extract the pieces of info we need from the requests above
 				$id = idx($event, 'id');
 				$name = idx($event, 'name');
-				$attending_people_for_event = idx($facebook->api('/' . $id . '/attending?limit=10'), 'data', array());
+				$attending_people_for_event = idx($facebook->api('/' . $id . '/attending?limit=49'), 'data', array());
 				$allAttendees = idx($facebook->api('/' . $id . '/attending'), 'data', array());
+
 				$_attendingMale = 0;
 				$_attendingFemale = 0;
-				//print_r($allAttendees);
+				
+				foreach($allAttendees as $person) {
 
+					$ida = idx($person, 'id');
+					$allAttendeesByID[] = $ida;
+					print_r($allAttendeesBYID);
+				}
+			
 				
 				foreach ($attending_people_for_event as $friendse) {
 					$fid = idx($friendse, 'id');
@@ -414,7 +405,6 @@ data to your  -->
 						$_attendingFemale = $_attendingFemale + 1;
 					}
 				}
-				 
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
@@ -422,50 +412,26 @@ data to your  -->
               <?php 
 				echo he($name); 
 				?> </a>
-			<br>
-				<?php
-				echo he('Number of Females Attending = ' . $_attendingFemale);
+      <div id="eventdetails">
+        <?php
 				?>
-			<br>
 				<?php
-				echo he('Number of Males Attending = ' . $_attendingMale);
-			?>
-			<br>
+			  ?>
 				<?php
-				echo he('% of Males Attending = ' . round (100 * ($_attendingMale / ($_attendingMale + $_attendingFemale))));
+				echo he('%♂ = ' . round (100 * ($_attendingMale / ($_attendingMale + $_attendingFemale))));
 				?>
-			<br>
 				<?php
-				echo he('% of Females Attending = ' . round (100 * ($_attendingFemale / ($_attendingMale + $_attendingFemale))));
-				?>	
-			<br>
-				<?php
-				echo he('Number of people attending = ' . $_attendingFemale + $_attendingMale);
+				echo he(' %♀ = ' . round (100 * ($_attendingFemale / ($_attendingMale + $_attendingFemale))));
 				?>
-			<br>
 				<?php
-					foreach ($potential_friends_who_are_not_friends_already as $key => $value) {
-						// Extract the pieces of info we need from the requests above
-						//$id = $potential_friends_who_are_not_friends_already[$x];
-						$id = $key;
-						if (in_array($id, $allAttendees)) {
-							?>
-							 <li>
-							<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-							<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-							</a>
-							<?php 
-							print_r($id);
-						}
-						
-					}
 				?>
 			<br>
 
             
           </li>
           <?php
-            }
+			}
+}
           ?>
         </ul>
       </div>
@@ -473,177 +439,14 @@ data to your  -->
 
     </div>
 
-
-    <header class="clearfix">
-      <?php if (isset($basic)) { ?>
-      <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
-
-      <div>
-        <h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1>
-        <p class="tagline">
-          This is your app
-          <a href="<?php echo he(idx($app_info, 'link'));?>" target="_top"><?php echo he($app_name); ?></a>
-        </p>
-
-        <div id="share-app">
-          <p>Share your app:</p>
-          <ul>
-            <li>
-              <a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>">
-                <span class="plus">Post to Wall</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="facebook-button speech-bubble" id="sendToFriends" data-url="<?php echo AppInfo::getUrl(); ?>">
-                <span class="speech-bubble">Send Message</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="facebook-button apprequests" id="sendRequest" data-message="Test this awesome app">
-                <span class="apprequests">Send Requests</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <?php } else { ?>
-      <div>
-        <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
-      </div>
-      <?php } ?>
-    </header>
-
-    <section id="get-started">
-
-      <p>Welcome to your Facebook app, running on <span>heroku</span>! - anmol</p>
-
-      <a href="https://devcenter.heroku.com/articles/facebook" target="_top" class="button">Learn How to Edit This App</a>
-    </section>
-
-    <?php
-      if ($user_id) {
-    ?>
-
-    <section id="samples" class="clearfix">
-      <h1>Examples of the Facebook Graph API</h1>
-
-      <div class="list">
-        <h3>A few of your friends</h3>
-        <ul class="friends">
-          <?php
-            foreach ($friends as $friend) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($friend, 'id');
-              $name = idx($friend, 'name');
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list">
-        <h3>Events</h3>
-        <ul class="events">
-          <?php
-            foreach ($events as $event) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($event, 'id');
-			  $name = idx($event, 'name');
-          ?>
-          <li>
-			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-			<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-	 <div class="list">
-        <h3>Attendees to the event</h3>
-        <ul class="things">
-          <?php
-            foreach ($attending_people_for_picked_event as $person) {
-				$id = idx($person, 'id');
-				$name = idx($person, 'name');
-          ?>
-          <li>
-			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-				<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list">
-        <h3>Friends attending event</h3>
-        <ul class="friends">
-          <?php
-            foreach ($friends_attending_event as $fae) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($fae, 'uid');
-			  $name = idx($facebook->api('/' . $id), 'name');
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-    </section>
-
-    <?php
-      }
-    ?>
-
-    <section id="guides" class="clearfix">
-      <h1>Learn More About Heroku &amp; Facebook Apps</h1>
-      <ul>
-        <li>
-          <a href="https://www.heroku.com/?utm_source=facebook&utm_medium=app&utm_campaign=fb_integration" target="_top" class="icon heroku">Heroku</a>
-          <p>Learn more about <a href="https://www.heroku.com/?utm_source=facebook&utm_medium=app&utm_campaign=fb_integration" target="_top">Heroku</a>, or read developer docs in the Heroku <a href="https://devcenter.heroku.com/" target="_top">Dev Center</a>.</p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/web/" target="_top" class="icon websites">Websites</a>
-          <p>
-            Drive growth and engagement on your site with
-            Facebook Login and Social Plugins.
-          </p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/mobile/" target="_top" class="icon mobile-apps">Mobile Apps</a>
-          <p>
-            Integrate with our core experience by building apps
-            that operate within Facebook.
-          </p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/canvas/" target="_top" class="icon apps-on-facebook">Apps on Facebook</a>
-          <p>Let users find and connect to their friends in mobile apps and games.</p>
-        </li>
-      </ul>
-    </section>
-
+    <div id="fb-root"></div>
+  <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=512435695470615";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
 
   </body>
 </html>
