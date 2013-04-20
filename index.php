@@ -65,7 +65,21 @@ if ($user_id) {
   // This fetches 4 of your friends.
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
   $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
+  /*
+  $allEvents = idx($facebook->api('/me/events'), 'data', array();
   
+  
+  countAttendance (&$event_id) {
+	$individualEvent = idx($facebook->api('/'. $event_id), 'data', array();
+	return count($individualEvent);
+  }
+  */
+  
+  /*
+  foreach ($allEvents as $events) {
+	print_r(countAttendance($events));
+  }
+  */
   $friend_id = 0;
   
   
