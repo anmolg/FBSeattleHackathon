@@ -1,0 +1,17 @@
+#wrap {
+width:960px;
+margin:0 auto;
+background: #FFF;
+}
+
+#friendcolumn {
+	width: 260px;
+	margin:0px;
+	float: left;
+}
+
+#eventcolumn {
+	width: 600px;
+	margin: 0px;
+	float:right;
+}

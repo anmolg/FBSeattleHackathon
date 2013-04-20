@@ -54,46 +54,150 @@ if ($user_id) {
     }
   }
 
-  // This fetches some things that you like . 'limit=*" only returns * values.
-  // To see the format of the data you are retrieving, use the "Graph API
-  // Explorer" which is at https://developers.facebook.com/tools/explorer/
-  $friends_attending_event = $facebook->api(array(
-    'method' => 'fql.query',
-    'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=205704069574071 and  rsvp_status="attending";'
-  ));
+  
 
   // This fetches 4 of your friends.
-  $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
+  $allFriends = idx($facebook->api('/me/friends'), 'data', array());
   $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
   
+  $allEvents = idx($facebook->api('/me/events'), 'data', array());
+  
+  foreach ($allEvents as $events) {
+	$eventID = idx($events, 'id');
+	$individualEvent = idx($facebook->api('/' . $eventID . '/attending'), 'data', array());
+	$countEvent = count($individualEvent);
+  } 
+  
+  /*
+  countAttendance (&$event_id) {
+	$individualEvent = idx($facebook->api('/'. $event_id), 'data', array();
+	return count($individualEvent);
+  }
+  
+  
+  
+  foreach ($allEvents as $events) {
+	print_r(countAttendance($events));
+  }
+  */
+  
   $friend_id = 0;
-  
-  
     foreach ($friendlists as $friendk) {
               // Extract the pieces of info we need from the requests above
               $id = idx($friendk, 'id');
               $name = idx($friendk, 'name');
 			  
 			  if ($name == "Close Friends") {
-				$friend_id = $id;
+				  $friend_id = $id;
 				//echo $friend_id;
 				//print_r ($friend_id);
 				}
-}				
+	}			
 					
-	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
-	//print_r ($friends);		 
+  $friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
+  // I added this to get the ids of close friends. $friends is an array of array of id..lol
+  foreach($friends as $frd) {
+	  $id = idx($frd, 'id');
+	  $close_friends[] = $id;
+  }	 
 	
+	$_attending = idx($facebook->api('/me/friends?limit=50'), 'data', array());
+	$_attendingMale = 0;
+	$_attendingFemale = 0;
+	
+	foreach ($_attending as $friendse) {
+		$id = idx($friendse, 'id');
+		$gender = idx($facebook->api('/' . $id), 'gender');
+		if ($gender == "male") {
+			$_attendingMale = $_attendingMale + 1;
+		}
+		if ($gender == "female") {
+			$_attendingFemale = $_attendingFemale + 1;
+		}
+	}
 
-  // And this returns 16 of your photos.
-  $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
+	// This returns the events you are attending
+	$events = idx($facebook->api('/me/events?fields=picture,name&type=attending'), 'data', array());
+
+	// Get the input from user which events to choose
+	// for testing, right now it uses the first event
+	$picked_event = reset($events);
+  if ($picked_event != NULL) {
+  	$picked_event_id = idx($picked_event, 'id'); /* handle null */
+	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+
+	foreach($attending_people_for_picked_event as $person) {
+	  $id = idx($person, 'id');
+	  $attending_people_ids_for_picked_event[] = $id;
+	}	 
+	print_r($attending_people_ids_for_picked_event);
+
+	// Get friends who are attending this particular event
+	$friends_attending_event = $facebook->api(array(
+		'method' => 'fql.query',
+		'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=' . $picked_event_id . ' and rsvp_status="attending";'
+	));
+  }
+
+	// Gets the past max 5 events you attended, number of events is easily customizable by changing the number '5'
+	$past_events = idx($facebook->api('/me/events/attending?since=0&until=yesterday&limit=5'), 'data', array());
+
+	$attendees = array();
+	foreach( $past_events as $event ) {
+		$event_id = idx($event, 'id');
+		$attendees = array_merge( $attendees, idx($facebook->api('/' . $event_id . '/attending'), 'data', array()) );
+	}
+
+	// Hash map of attendees. The second value indicates the number of attendings of the attendee in the past 5 events
+	$hash_map_of_attendees = array();
+	foreach( $attendees as $attendee ) {
+		$attendee_id = idx($attendee, 'id');
+		$att = idx($hash_map_of_attendees, $attendee_id);
+		if ( is_null($att) )
+		{
+			$hash_map_of_attendees[$attendee_id] = 1;
+		}
+		else
+		{
+			$hash_map_of_attendees[$attendee_id] += 1;
+		}
+	}
+
+	// Extracts people who have attended more than or equal to two events
+	foreach( $attendees as $attendee ) {
+		$attendee_id = idx($attendee, 'id');
+		if ( $hash_map_of_attendees[$attendee_id] >= 3 )
+		{
+			$potential_friends[$attendee_id] = $hash_map_of_attendees[$attendee_id];
+		}
+	}
+
+	// Remove close_friends from the list of potential friends, to get ids of the potential friends, use array_keys()
+	$potential_friends_ids = array_keys($potential_friends);
+	//print_r($potential_friends_ids);
+	foreach( $potential_friends_ids as $pfi ) {
+		if (!in_array($pfi, $close_friends)) {
+			$potential_friends_who_are_not_friends_already[$pfi] = $potential_friends[$pfi];
+		}
+	}
+	//print_r($potential_friends_who_are_not_friends_already);
+				    
+	//$potential_friends_who = array_keys($potential_friends_who_are_not_friends_already);
+				
+	foreach ($potential_friends_who_are_not_friends_already as $key => $value) {
+		// Extract the pieces of info we need from the requests above
+		//$id = $potential_friends_who_are_not_friends_already[$x];
+		print_r ($key);
+    }
+
+
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
   $app_using_friends = $facebook->api(array(
     'method' => 'fql.query',
     'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
-  ));
+));
 }
 
 // Fetch the basic info of the app that they are using
@@ -110,13 +214,14 @@ $app_name = idx($app_info, 'name', '');
 
     <title><?php echo he($app_name); ?></title>
     <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/my.css" media="Screen" type="text/css" />
     <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
 
     <!--[if IEMobile]>
-    <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
     <![endif]-->
 
-    <!-- These are Open Graph tags.  They add meta data to your  -->
+	<!-- These are Open Graph tags.  They add meta 
+data to your  -->
     <!-- site that facebook uses when your content is shared     -->
     <!-- over facebook.  You should fill these tags in with      -->
     <!-- your data.  To learn more about Open Graph, visit       -->
@@ -130,6 +235,9 @@ $app_name = idx($app_info, 'name', '');
     <meta property="fb:app_id" content="<?php echo AppInfo::appID(); ?>" />
 
     <script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 
     <script type="text/javascript">
       function logResponse(response) {
@@ -166,7 +274,7 @@ $app_name = idx($app_info, 'name', '');
               if (response != null) {
                 logResponse(response);
               }
-            }
+			}
           );
         });
 
@@ -186,6 +294,19 @@ $app_name = idx($app_info, 'name', '');
         });
       });
     </script>
+
+      <style>
+      #feedback { font-size: 1.4em; }
+      #selectable .ui-selecting { background: #FECA40; }
+      #selectable .ui-selected { background: #F39814; color: white; }
+      #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+      #selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+      </style>
+      <script>
+      $(function() {
+        $( "#selectable" ).selectable();
+      });
+      </script>
 
     <!--[if IE]>
       <script type="text/javascript">
@@ -231,6 +352,128 @@ $app_name = idx($app_info, 'name', '');
       }(document, 'script', 'facebook-jssdk'));
     </script>
 
+      <?php if (isset($basic)) { ?>
+        </div><p>Signed in!</p></div>
+      <?php } else { ?>
+      <div>
+        <p>Welcome to BubbleCrew, where we show you where your social bubbles have been and will be.</p>
+        <p>You can get started by logging in below.</p>
+        <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
+      </div>
+      <?php } ?>
+
+    <div id="wrap">
+
+      <div id="friendcolumn">
+
+        <div class="list">
+          <h3>A few of your friends</h3>
+          <ul class="friends">
+            <?php
+              foreach ($friends as $friend) {
+                // Extract the pieces of info we need from the requests above
+                $id = idx($friend, 'id');
+                $name = idx($friend, 'name');
+            ?>
+            <li>
+              <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+                <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+                <?php echo he($name); ?>
+              </a>
+            </li>
+            <?php
+              }
+            ?>
+          </ul>
+        </div>
+
+      </div>
+
+      <div id="eventcolumn">
+        <p>Events will be here!</p>
+	        <ul class="events">
+          <?php
+            foreach ($events as $event) {
+              // Extract the pieces of info we need from the requests above
+				$id = idx($event, 'id');
+				$name = idx($event, 'name');
+				$attending_people_for_event = idx($facebook->api('/' . $id . '/attending?limit=10'), 'data', array());
+				$allAttendees = idx($facebook->api('/' . $id . '/attending'), 'data', array());
+				$_attendingMale = 0;
+				$_attendingFemale = 0;
+				//print_r($allAttendees);
+
+				
+				foreach ($attending_people_for_event as $friendse) {
+					$fid = idx($friendse, 'id');
+					$gender = idx($facebook->api('/' . $fid), 'gender');
+					if ($gender == "male") {
+						$_attendingMale = $_attendingMale + 1;
+					}
+					if ($gender == "female") {
+						$_attendingFemale = $_attendingFemale + 1;
+					}
+				}
+				 
+          ?>
+          <li>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+			<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+              <?php 
+				echo he($name); 
+				?> </a>
+			<br>
+				<?php
+				echo he('Number of Females Attending = ' . $_attendingFemale);
+				?>
+			<br>
+				<?php
+				echo he('Number of Males Attending = ' . $_attendingMale);
+			?>
+			<br>
+				<?php
+				echo he('% of Males Attending = ' . round (100 * ($_attendingMale / ($_attendingMale + $_attendingFemale))));
+				?>
+			<br>
+				<?php
+				echo he('% of Females Attending = ' . round (100 * ($_attendingFemale / ($_attendingMale + $_attendingFemale))));
+				?>	
+			<br>
+				<?php
+				echo he('Number of people attending = ' . $_attendingFemale + $_attendingMale);
+				?>
+			<br>
+				<?php
+					foreach ($potential_friends_who_are_not_friends_already as $key => $value) {
+						// Extract the pieces of info we need from the requests above
+						//$id = $potential_friends_who_are_not_friends_already[$x];
+						$id = $key;
+						if (in_array($id, $allAttendees)) {
+							?>
+							 <li>
+							<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+							<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+							</a>
+							<?php 
+							print_r($id);
+						}
+						
+					}
+				?>
+			<br>
+
+            
+          </li>
+          <?php
+            }
+          ?>
+        </ul>
+      </div>
+	  
+
+    </div>
+
+
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -266,7 +509,7 @@ $app_name = idx($app_info, 'name', '');
       <?php } else { ?>
       <div>
         <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos,read_friendlists"></div>
+        <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
       </div>
       <?php } ?>
     </header>
@@ -306,21 +549,20 @@ $app_name = idx($app_info, 'name', '');
         </ul>
       </div>
 
-      <div class="list inline">
-        <h3>Recent photos</h3>
-        <ul class="photos">
+      <div class="list">
+        <h3>Events</h3>
+        <ul class="events">
           <?php
-            $i = 0;
-            foreach ($photos as $photo) {
+            foreach ($events as $event) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($photo, 'id');
-              $picture = idx($photo, 'picture');
-              $link = idx($photo, 'link');
-
-              $class = ($i++ % 4 === 0) ? 'first-column' : '';
+              $id = idx($event, 'id');
+			  $name = idx($event, 'name');
           ?>
-          <li style="background-image: url(<?php echo he($picture); ?>);" class="<?php echo $class; ?>">
-            <a href="<?php echo he($link); ?>" target="_top"></a>
+          <li>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+			<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+              <?php echo he($name); ?>
+            </a>
           </li>
           <?php
             }
@@ -328,20 +570,17 @@ $app_name = idx($app_info, 'name', '');
         </ul>
       </div>
 
-      <div class="list">
-        <h3>Things you like</h3>
+	 <div class="list">
+        <h3>Attendees to the event</h3>
         <ul class="things">
           <?php
-            foreach ($friends_attending_event as $friend) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($friend, 'id');
-              $name = idx($friend, 'name');
-
-              // This display's the object that the user liked as a link to
-              // that object's page.
+            foreach ($attending_people_for_picked_event as $person) {
+				$id = idx($person, 'id');
+				$name = idx($person, 'name');
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+				<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
               <?php echo he($name); ?>
             </a>
           </li>
@@ -352,13 +591,13 @@ $app_name = idx($app_info, 'name', '');
       </div>
 
       <div class="list">
-        <h3>Friends using this app</h3>
+        <h3>Friends attending event</h3>
         <ul class="friends">
           <?php
-            foreach ($app_using_friends as $auf) {
+            foreach ($friends_attending_event as $fae) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($auf, 'uid');
-              $name = idx($auf, 'name');
+              $id = idx($fae, 'uid');
+			  $name = idx($facebook->api('/' . $id), 'name');
           ?>
           <li>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
@@ -404,5 +643,7 @@ $app_name = idx($app_info, 'name', '');
         </li>
       </ul>
     </section>
+
+
   </body>
 </html>
