@@ -450,8 +450,7 @@ data to your  -->
             foreach ($friends_attending_event as $fae) {
               // Extract the pieces of info we need from the requests above
               $id = idx($fae, 'uid');
-			  //$name = idx($fae, 'name');
-			  $user = idx($facebook->api('/' . $id), 'data', array());
+			  $user = idx($facebook->api('/' . $id), 'name');
 			  print_r($user);
 			  $name = idx($user, 'name');
           ?>
