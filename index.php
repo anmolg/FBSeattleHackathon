@@ -71,15 +71,15 @@ if ($user_id) {
               $id = idx($friendk, 'id');
               $name = idx($friendk, 'name');
 			  
-			  if ($name = "FBHackathon") {
+			  if ($name == "Close Friends") {
 				$friend_id = $id;
 				//echo $friend_id;
 				//print_r ($friend_id);
 				}
 }				
 					
-	$friends = idx($facebook->api('/' . '10151566277824904' . '/members'), 'data', array());
-	print_r ($friends);		 
+	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
+	//print_r ($friends);		 
 	
 
   // And this returns 16 of your photos.
