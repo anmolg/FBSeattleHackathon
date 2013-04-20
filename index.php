@@ -65,7 +65,7 @@ if ($user_id) {
   
   $friend_id = 0;
   
-  /*
+  
     foreach ($friendlists as $friendk) {
               // Extract the pieces of info we need from the requests above
               $id = idx($friendk, 'id');
@@ -75,7 +75,7 @@ if ($user_id) {
 				$friend_id = $id;
 				}
 }				
-	*/				
+					
 	$friends = idx($facebook->api('/10150326620294904/members'), 'data', array());
 			 
 	
