@@ -57,7 +57,7 @@ if ($user_id) {
   
 
   // This fetches 4 of your friends.
-  $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
+  $allFriends = idx($facebook->api('/me/friends'), 'data', array());
   $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
   
   $allEvents = idx($facebook->api('/me/events'), 'data', array());
@@ -131,7 +131,14 @@ if ($user_id) {
 	));
   }
 
-	
+	// Gets the past max 5 events you attended, number of events is easily customizable by changing the number '5'
+	$past_events = idx($facebook->api('/me/events/attending?since=0&until=yesterday&limit=5'), 'data', array());
+
+	foreach( $past_events as $event ) {
+		$event_id = idx($event, 'id');
+		$attendees[] = idx($facebook->api('/' . $event_id . '/attending'), 'data', array());
+	}
+	print_r($attendees);
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
@@ -333,10 +340,11 @@ data to your  -->
       <div id="eventcolumn">
         <p>Events will be here!</p>
       </div>
+	  
 
     </div>
 
-<!-- 
+
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -507,6 +515,6 @@ data to your  -->
       </ul>
     </section>
 
--->
+
   </body>
 </html>
