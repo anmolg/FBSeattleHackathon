@@ -100,7 +100,7 @@ if ($user_id) {
 	}
 
   // And this returns 16 of your photos.
-	$events = idx($facebook->api('/me/events?fields=picture&type=attending'), 'data', array());
+	$events = idx($facebook->api('/me/events?fields=picture,name&type=attending'), 'data', array());
 	print_r ($events);
 
   // Here is an example of a FQL call that fetches all of your friends that are
@@ -328,10 +328,12 @@ data to your  -->
             foreach ($events as $event) {
               // Extract the pieces of info we need from the requests above
               $id = idx($event, 'id');
-              $name = idx($event, 'name');
+			  $name = idx($event, 'name');
+			  $picture = idx($event, 'picture[data][url]';
           ?>
           <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+			 <img src="<?php echo he($picture) ?>" alt="<?php echo he($name); ?>">
               <?php echo he($name); ?>
             </a>
           </li>
