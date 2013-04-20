@@ -140,7 +140,8 @@ if ($user_id) {
   $app_using_friends = $facebook->api(array(
     'method' => 'fql.query',
     'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
-  ));
+));
+  print_r ($app_using_friends);
 }
 
 // Fetch the basic info of the app that they are using
