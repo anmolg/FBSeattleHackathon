@@ -70,10 +70,11 @@ if ($user_id) {
   
   foreach ($allEvents as $events) {
 	$eventID = idx($events, 'id');
-	print_r($eventID);
+	//print_r($eventID);
 	$individualEvent = idx($facebook->api('/' . $eventID . '/attending'), 'data', array());
+	print_r($individualEvent);
 	$countEvent = count($individualEvent);
-	print_r($countEvent);
+	//print_r($countEvent);
   }
   
   /*
