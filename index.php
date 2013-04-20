@@ -73,7 +73,8 @@ if ($user_id) {
 			  
 			  if ($name = "Close Friends") {
 				$friend_id = $id;
-				echo $friend_id;
+				//echo $friend_id;
+				print_r $friendk;
 				}
 }				
 					
