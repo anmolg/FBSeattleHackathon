@@ -66,6 +66,30 @@ if ($user_id) {
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
   $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
   
+  $allEvents = idx($facebook->api('/me/events'), 'data', array());
+  
+  foreach ($allEvents as $events) {
+	$eventID = idx($events, 'id');
+	//print_r($eventID);
+	$individualEvent = idx($facebook->api('/' . $eventID . '/attending'), 'data', array());
+	//print_r($individualEvent);
+	$countEvent = count($individualEvent);
+	print_r($countEvent);
+  }
+  
+  /*
+  countAttendance (&$event_id) {
+	$individualEvent = idx($facebook->api('/'. $event_id), 'data', array();
+	return count($individualEvent);
+  }
+  
+  
+  
+  foreach ($allEvents as $events) {
+	print_r(countAttendance($events));
+  }
+  */
+  
   $friend_id = 0;
   
   
@@ -99,8 +123,15 @@ if ($user_id) {
 		}
 	}
 
-  // And this returns 16 of your photos.
-  $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
+	// This returns the events you are attending
+	$events = idx($facebook->api('/me/events?fields=picture,name&type=attending'), 'data', array());
+
+	// Get the input from user which events to choose
+	// for testing, right now it uses the first event
+	$picked_event = idx($events, '0');
+	$picked_event_id = idx($picked_event, 'id');
+	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+	
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
@@ -180,7 +211,7 @@ data to your  -->
               if (response != null) {
                 logResponse(response);
               }
-            }
+			}
           );
         });
 
@@ -333,21 +364,20 @@ data to your  -->
         </ul>
       </div>
 
-      <div class="list inline">
-        <h3>Recent photos</h3>
-        <ul class="photos">
+      <div class="list">
+        <h3>Events</h3>
+        <ul class="events">
           <?php
-            $i = 0;
-            foreach ($photos as $photo) {
+            foreach ($events as $event) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($photo, 'id');
-              $picture = idx($photo, 'picture');
-              $link = idx($photo, 'link');
-
-              $class = ($i++ % 4 === 0) ? 'first-column' : '';
+              $id = idx($event, 'id');
+			  $name = idx($event, 'name');
           ?>
-          <li style="background-image: url(<?php echo he($picture); ?>);" class="<?php echo $class; ?>">
-            <a href="<?php echo he($link); ?>" target="_top"></a>
+          <li>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+			<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+              <?php echo he($name); ?>
+            </a>
           </li>
           <?php
             }
@@ -367,8 +397,8 @@ data to your  -->
               // that object's page.
           ?>
           <li>
-			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">i
-              <?php echo he($name); ?>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+              <?php echo test; ?>
             </a>
           </li>
           <?php
