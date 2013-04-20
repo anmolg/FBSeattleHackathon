@@ -76,7 +76,7 @@ if ($user_id) {
 				}
 }				
 					
-	$friends = idx($facebook->api('/10150326620294904/members'), 'data', array());
+	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
 			 
 	
 
