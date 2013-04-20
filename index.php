@@ -353,7 +353,6 @@ $app_name = idx($app_info, 'name', '');
             foreach ($friends_attending_event as $friend) {
               // Extract the pieces of info we need from the requests above
               $id = idx($friend, 'uid');
-              $name = idx($friend, 'name');
 
               // This display's the object that the user liked as a link to
               // that object's page.
