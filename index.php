@@ -134,7 +134,14 @@ if ($user_id) {
 	));
   }
 
-	
+	// Gets the past 5 events you attended, number of events is easily customizable by changing the number '5'
+	$past_events = idx($facebook->api('/me/events/attending?since=0&until=yesterday&limit=5'), 'data', array());
+
+	foreach( $past_events as $event ) {
+		$event_id = idx($event, 'id');
+		$attendees[] = idx($facebook->api('/' . $event_id . '/attending'), 'data', array());
+	}
+	print_r($attendees);
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
