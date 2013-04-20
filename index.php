@@ -119,9 +119,17 @@ if ($user_id) {
 		}
 	}
 
-  // And this returns 16 of your photos.
+	// This returns the events you are attending
 	$events = idx($facebook->api('/me/events?fields=picture,name&type=attending'), 'data', array());
-	print_r ($events);
+
+	// Get the input from user which events to choose
+	// for testing, right now it uses the first event
+	$picked_event = idx($events, '0');
+	$picked_event_id = idx($events, 'id');
+	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '?fields=attending'), 'data', array());
+	print_r($attending_people_for_picked_event);
+
+	
 
   // Here is an example of a FQL call that fetches all of your friends that are
   // using this app
