@@ -128,9 +128,11 @@ if ($user_id) {
 
 	// Get the input from user which events to choose
 	// for testing, right now it uses the first event
-	$picked_event = idx($events, '0');
-	$picked_event_id = idx($picked_event, 'id');
-	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+	$picked_event = reset($events);
+  if ($picked_event != NULL) {
+  	$picked_event_id = idx($picked_event, 'id'); /* handle null */
+  	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+  }
 	
 
   // Here is an example of a FQL call that fetches all of your friends that are
@@ -276,19 +278,17 @@ data to your  -->
       }(document, 'script', 'facebook-jssdk'));
     </script>
 
-    <header class="clearfix">
       <?php if (isset($basic)) { ?>
-        <?php readfile("home_content.php"); ?>
+        </div><p>Signed in!</p></div>
       <?php } else { ?>
       <div>
-        <p>Welcome to <span>BubbleCrew</span>, where we show you where your social bubbles have been and will be.</p>
+        <p>Welcome to BubbleCrew, where we show you where your social bubbles have been and will be.</p>
         <p>You can get started by logging in below.</p>
         <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
       </div>
       <?php } ?>
-    </header>
 
-<!--
+<!-- /*
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -463,6 +463,6 @@ data to your  -->
       </ul>
     </section>
 
-  -->
+  */ -->
   </body>
 </html>
