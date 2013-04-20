@@ -375,8 +375,7 @@ data to your  -->
 			?>
         <p>Events will be here!</p>
 	        <ul class="events">
-<?php
-if (!is_null($events)) {
+          <?php
             foreach ($events as $event) {
               // Extract the pieces of info we need from the requests above
 				$id = idx($event, 'id');
@@ -405,6 +404,7 @@ if (!is_null($events)) {
 						$_attendingFemale = $_attendingFemale + 1;
 					}
 				}
+				 
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
@@ -430,8 +430,7 @@ if (!is_null($events)) {
             
           </li>
           <?php
-			}
-}
+            }
           ?>
         </ul>
       </div>
