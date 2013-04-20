@@ -132,7 +132,6 @@ if ($user_id) {
 		'method' => 'fql.query',
 		'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=' . $picked_event_id . ' and rsvp_status="attending";'
 	));
-  	print_r($friends_attending_event);
   }
 
 	
@@ -408,18 +407,17 @@ data to your  -->
       </div>
 
       <div class="list">
-        <h3>Friends using this app</h3>
+        <h3>Friends attending event</h3>
         <ul class="friends">
           <?php
-            foreach ($app_using_friends as $auf) {
+            foreach ($friends_attending_event as $fae) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($auf, 'uid');
-              $name = idx($auf, 'name');
+              $id = idx($fae, 'uid');
+              //$name = idx($fae, 'name');
           ?>
           <li>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
+              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square">
             </a>
           </li>
           <?php
