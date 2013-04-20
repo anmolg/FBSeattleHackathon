@@ -100,7 +100,7 @@ if ($user_id) {
 	}
 
   // And this returns 16 of your photos.
-	$events = idx($facebook->api('/me/events?type=attending'), 'data', array());
+	$events = idx($facebook->api('/me/events?fields=picture&type=attending'), 'data', array());
 	print_r ($events);
 
   // Here is an example of a FQL call that fetches all of your friends that are
@@ -181,7 +181,7 @@ data to your  -->
               if (response != null) {
                 logResponse(response);
               }
-            }
+			}
           );
         });
 
