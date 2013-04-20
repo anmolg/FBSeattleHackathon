@@ -450,9 +450,7 @@ data to your  -->
             foreach ($friends_attending_event as $fae) {
               // Extract the pieces of info we need from the requests above
               $id = idx($fae, 'uid');
-			  $user = idx($facebook->api('/' . $id), 'name');
-			  print_r($user);
-			  $name = idx($user, 'name');
+			  $name = idx($facebook->api('/' . $id), 'name');
           ?>
           <li>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
