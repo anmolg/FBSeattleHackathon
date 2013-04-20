@@ -65,7 +65,7 @@ if ($user_id) {
   
   $friend_id = 0;
   
-  
+  /*
   <?php
     foreach ($friendlists as $friendk) {
               // Extract the pieces of info we need from the requests above
@@ -75,9 +75,9 @@ if ($user_id) {
 			  if ($name = "Close Friends")
 				$friend_id = $id;
 	?>	  
-	/*				
+	*/				
 	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
-	*/		 
+			 
 	
 
   // And this returns 16 of your photos.
