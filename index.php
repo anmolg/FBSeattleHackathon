@@ -92,8 +92,8 @@ if ($user_id) {
 		$id = idx($friendse, 'id');
 		$friend_id = idx($facebook->api('/' . $id), 'gender');
 		print_r($friend_id);
-		$gender = idx($friend_id, 'gender');
-		print_r($gender);
+		//$gender = idx($friend_id, 'gender');
+		//print_r($gender);
 		if ($gender == "male") {
 			$_attendingMale = $_attendingMale + 1;
 		}
