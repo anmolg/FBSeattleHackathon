@@ -341,7 +341,7 @@ data to your  -->
         <h3>Events</h3>
         <ul class="events">
           <?php
-            foreach ($events as $event) {
+            foreach ($allEvents as $event) {
               // Extract the pieces of info we need from the requests above
               $id = idx($event, 'id');
 			  $name = idx($event, 'name');
