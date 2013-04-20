@@ -57,7 +57,7 @@ if ($user_id) {
   // Get friends who are attending this particular event
   $friends_attending_event = $facebook->api(array(
     'method' => 'fql.query',
-    'query' => 'select uid, name, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=349479501839364 and  rsvp_status="attending";'
+    'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=349479501839364 and  rsvp_status="attending";'
 ));
   print_r($friends_attending_event);
 
