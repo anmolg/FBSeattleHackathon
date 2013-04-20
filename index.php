@@ -276,7 +276,6 @@ data to your  -->
       }(document, 'script', 'facebook-jssdk'));
     </script>
 
-    <header class="clearfix">
       <?php if (isset($basic)) { ?>
         <?php readfile("home_content.php"); ?>
       <?php } else { ?>
@@ -286,7 +285,6 @@ data to your  -->
         <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
       </div>
       <?php } ?>
-    </header>
 
 <!--
     <header class="clearfix">
