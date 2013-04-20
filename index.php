@@ -279,7 +279,7 @@ data to your  -->
     </script>
 
       <?php if (isset($basic)) { ?>
-        </div><!-- actual code here --></div>
+        </div><p>Signed in!</p></div>
       <?php } else { ?>
       <div>
         <p>Welcome to BubbleCrew, where we show you where your social bubbles have been and will be.</p>
