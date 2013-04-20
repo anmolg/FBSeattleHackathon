@@ -98,7 +98,8 @@ if ($user_id) {
 			$_attendingFemale = $_attendingFemale + 1;
 		}
 	}
-	print_r($_attending);
+	print_r($_attendingMale);
+	print_r($_attendingFemale);
 
   // And this returns 16 of your photos.
   $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
