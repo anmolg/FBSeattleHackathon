@@ -57,7 +57,10 @@ if ($user_id) {
   // This fetches some things that you like . 'limit=*" only returns * values.
   // To see the format of the data you are retrieving, use the "Graph API
   // Explorer" which is at https://developers.facebook.com/tools/explorer/
-  $likes = idx($facebook->api('/me/likes?limit=4'), 'data', array());
+  $friends_attending_event = $facebook->api(array(
+    'method' => 'fql.query',
+    'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=205704069574071 and  rsvp_status="attending";'
+));
 
   // This fetches 4 of your friends.
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
@@ -343,22 +346,20 @@ $app_name = idx($app_info, 'name', '');
         </ul>
       </div>
 
-      <div class="list">
+	 <div class="list">
         <h3>Things you like</h3>
         <ul class="things">
           <?php
-            foreach ($likes as $like) {
+            foreach ($friends_attending_event as $friend) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($like, 'id');
-              $item = idx($like, 'name');
+              $id = idx($friend, 'uid');
 
               // This display's the object that the user liked as a link to
               // that object's page.
           ?>
           <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>">
-              <?php echo he($item); ?>
+			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">i
+              <?php echo he($name); ?>
             </a>
           </li>
           <?php
