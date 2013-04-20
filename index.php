@@ -71,7 +71,7 @@ if ($user_id) {
               $id = idx($friendk, 'id');
               $name = idx($friendk, 'name');
 			  
-			  if ($name = "Close Friends") {
+			  if ($name = "FBHackathon") {
 				$friend_id = $id;
 				//echo $friend_id;
 				//print_r ($friend_id);
