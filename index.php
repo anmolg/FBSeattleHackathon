@@ -131,7 +131,7 @@ if ($user_id) {
 	$picked_event_id = idx($picked_event, 'id');
 	//print_r($picked_event);
 	print_r("mine" . $picked_event_id);
-	$attending_people_for_picked_event = idx($facebook->api("/" . $picked_event_id . "?fields=attending"), 'data', array());
+	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
 	print_r($attending_people_for_picked_event);
 
 	
