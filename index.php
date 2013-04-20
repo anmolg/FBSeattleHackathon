@@ -359,13 +359,10 @@ data to your  -->
               // Extract the pieces of info we need from the requests above
               $id = idx($event, 'id');
 			  $name = idx($event, 'name');
-			  $picture_array = idx($event, 'picture');
-			  $picture_data = idx($picture_array, 'data');
-			  $picture_url = idx($picture_data, 'url');
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-			<img src="<?php echo he($url) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+			<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
               <?php echo he($name); ?>
             </a>
           </li>
