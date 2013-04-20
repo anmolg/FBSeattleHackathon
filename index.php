@@ -130,11 +130,7 @@ if ($user_id) {
 	// for testing, right now it uses the first event
 	$picked_event = idx($events, '0');
 	$picked_event_id = idx($picked_event, 'id');
-	//print_r($picked_event);
-	print_r("mine" . $picked_event_id);
 	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
-	print_r($attending_people_for_picked_event);
-
 	
 
   // Here is an example of a FQL call that fetches all of your friends that are
@@ -369,7 +365,7 @@ data to your  -->
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-			<img src="<?php echo he($url) ?>" alt="<?php echo he($name); ?>">
+			<img src="<?php echo he($url) ?>/picture?type=square" alt="<?php echo he($name); ?>">
               <?php echo he($name); ?>
             </a>
           </li>
