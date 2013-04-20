@@ -72,9 +72,9 @@ if ($user_id) {
 	$eventID = idx($events, 'id');
 	//print_r($eventID);
 	$individualEvent = idx($facebook->api('/' . $eventID . '/attending'), 'data', array());
-	print_r($individualEvent);
+	//print_r($individualEvent);
 	$countEvent = count($individualEvent);
-	//print_r($countEvent);
+	print_r($countEvent);
   }
   
   /*
