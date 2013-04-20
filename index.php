@@ -68,7 +68,7 @@ if ($user_id) {
   
   $allEvents = idx($facebook->api('/me/events'), 'data', array());
   
-  
+  /*
   countAttendance (&$event_id) {
 	$individualEvent = idx($facebook->api('/'. $event_id), 'data', array();
 	return count($individualEvent);
@@ -79,6 +79,7 @@ if ($user_id) {
   foreach ($allEvents as $events) {
 	print_r(countAttendance($events));
   }
+  */
   
   $friend_id = 0;
   
