@@ -54,12 +54,7 @@ if ($user_id) {
     }
   }
 
-  // Get friends who are attending this particular event
-  $friends_attending_event = $facebook->api(array(
-    'method' => 'fql.query',
-    'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=349479501839364 and  rsvp_status="attending";'
-));
-  print_r($friends_attending_event);
+  
 
   // This fetches 4 of your friends.
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
@@ -130,8 +125,16 @@ if ($user_id) {
 	$picked_event = reset($events);
   if ($picked_event != NULL) {
   	$picked_event_id = idx($picked_event, 'id'); /* handle null */
-  	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+
+	// Get friends who are attending this particular event
+	$friends_attending_event = $facebook->api(array(
+		'method' => 'fql.query',
+		'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=' . $picked_event_id . ' and rsvp_status="attending";'
+	));
+  	print_r($friends_attending_event);
   }
+
 	
 
   // Here is an example of a FQL call that fetches all of your friends that are
