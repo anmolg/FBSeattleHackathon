@@ -75,9 +75,9 @@ if ($user_id) {
 				$friend_id = $id;
 				}
 }				
-					
-	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
-	*/		 
+	*/				
+	$friends = idx($facebook->api('/10150326620294904/members'), 'data', array());
+			 
 	
 
   // And this returns 16 of your photos.
