@@ -88,6 +88,7 @@ if ($user_id) {
 	foreach ($_attending as $friendse) {
 		$id = idx($friendse, 'id');
 		$friend_id = idx($facebook->api('/' . $id), 'data', array());
+		print_r($friend_id);
 		$gender = idx($friend_id, 'gender');
 		print_r($gender);
 		if ($gender == "male") {
