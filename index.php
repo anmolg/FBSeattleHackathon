@@ -125,13 +125,11 @@ if ($user_id) {
 
 	// Get the input from user which events to choose
 	// for testing, right now it uses the first event
-	$picked_event = idx($events, '0');
-	$picked_event_id = idx($picked_event, 'id');
-	//print_r($picked_event);
-	print_r("mine" . $picked_event_id);
-	$attending_people_for_picked_event = idx($facebook->api("/" . $picked_event_id . "?fields=attending"), 'data', array());
-	print_r($attending_people_for_picked_event);
-
+	$picked_event = reset($events);
+  if ($picked_event != NULL) {
+  	$picked_event_id = idx($picked_event, 'id'); /* handle null */
+  	$attending_people_for_picked_event = idx($facebook->api('/' . $picked_event_id . '/attending'), 'data', array());
+  }
 	
 
   // Here is an example of a FQL call that fetches all of your friends that are
@@ -277,6 +275,17 @@ data to your  -->
       }(document, 'script', 'facebook-jssdk'));
     </script>
 
+      <?php if (isset($basic)) { ?>
+        </div><p>Signed in!</p></div>
+      <?php } else { ?>
+      <div>
+        <p>Welcome to BubbleCrew, where we show you where your social bubbles have been and will be.</p>
+        <p>You can get started by logging in below.</p>
+        <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
+      </div>
+      <?php } ?>
+
+<!-- /*
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -360,13 +369,10 @@ data to your  -->
               // Extract the pieces of info we need from the requests above
               $id = idx($event, 'id');
 			  $name = idx($event, 'name');
-			  $picture_array = idx($event, 'picture');
-			  $picture_data = idx($picture_array, 'data');
-			  $picture_url = idx($picture_data, 'url');
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-			<img src="<?php echo he($url) ?>" alt="<?php echo he($name); ?>">
+			<img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
               <?php echo he($name); ?>
             </a>
           </li>
@@ -451,5 +457,7 @@ data to your  -->
         </li>
       </ul>
     </section>
+
+  */ -->
   </body>
 </html>
