@@ -65,17 +65,17 @@ if ($user_id) {
   
   $friend_id = 0;
   
-  /*
-  <?php
+  
     foreach ($friendlists as $friendk) {
               // Extract the pieces of info we need from the requests above
               $id = idx($friendk, 'id');
               $name = idx($friendk, 'name');
 			  
-			  if ($name = "Close Friends")
+			  if ($name = "Close Friends") {
 				$friend_id = $id;
-	?>	  
-	*/				
+				}
+}				
+					
 	$friends = idx($facebook->api('/' . $friend_id . '/members'), 'data', array());
 			 
 	
