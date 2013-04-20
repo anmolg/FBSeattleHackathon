@@ -343,7 +343,7 @@ data to your  -->
 
     </div>
 
-<!-- 
+
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -514,6 +514,6 @@ data to your  -->
       </ul>
     </section>
 
--->
+
   </body>
 </html>
