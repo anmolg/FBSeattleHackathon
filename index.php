@@ -89,6 +89,7 @@ if ($user_id) {
 		$id = idx($friendse, 'id');
 		$friend_id = idx($facebook->api('/' . $id), 'data', array());
 		$gender = idx($friend_id, 'gender');
+		print_r($gender);
 		if ($gender == "male") {
 			$_attendingMale = $_attendingMale + 1;
 		}
@@ -96,8 +97,6 @@ if ($user_id) {
 			$_attendingFemale = $_attendingFemale + 1;
 		}
 	}
-	print_r($_attendingMale);
-	print_r($_attendingFemale);
 	print_r($_attending);
 
   // And this returns 16 of your photos.
