@@ -452,6 +452,7 @@ data to your  -->
               $id = idx($fae, 'uid');
 			  //$name = idx($fae, 'name');
 			  $user = idx($facebook->api('/' . $id), 'data', array());
+			  print_r($user);
 			  $name = idx($user, 'name');
           ?>
           <li>
