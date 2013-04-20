@@ -136,7 +136,7 @@ if ($user_id) {
 
 	foreach( $past_events as $event ) {
 		$event_id = idx($event, 'id');
-		$attendees = idx($facebook->api('/' . $event_id . '/attending'), 'data', array());
+		$attendees[] = idx($facebook->api('/' . $event_id . '/attending'), 'data', array());
 	}
 	print_r($attendees);
 
