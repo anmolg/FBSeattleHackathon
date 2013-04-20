@@ -413,11 +413,14 @@ data to your  -->
             foreach ($friends_attending_event as $fae) {
               // Extract the pieces of info we need from the requests above
               $id = idx($fae, 'uid');
-              //$name = idx($fae, 'name');
+			  //$name = idx($fae, 'name');
+			  $user = idx($facebook->api('/' . $id), 'data', array());
+			  $name = idx($user, 'name');
           ?>
           <li>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square">
+              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+              <?php echo he($name); ?>
             </a>
           </li>
           <?php
