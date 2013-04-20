@@ -277,16 +277,16 @@ data to your  -->
     </script>
 
       <?php if (isset($basic)) { ?>
-        <?php readfile("home_content.php"); ?>
+        <?php readfile("home_content.php") ?>
       <?php } else { ?>
       <div>
-        <p>Welcome to <span>BubbleCrew</span>, where we show you where your social bubbles have been and will be.</p>
+        <p>Welcome to BubbleCrew, where we show you where your social bubbles have been and will be.</p>
         <p>You can get started by logging in below.</p>
         <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
       </div>
       <?php } ?>
 
-<!--
+<!-- /*
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -459,6 +459,6 @@ data to your  -->
       </ul>
     </section>
 
-  -->
+  */ -->
   </body>
 </html>
