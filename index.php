@@ -127,10 +127,10 @@ $app_name = idx($app_info, 'name', '');
     <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
 
     <!--[if IEMobile]>
-    <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
     <![endif]-->
 
-    <!-- These are Open Graph tags.  They add meta data to your  -->
+	<!-- These are Open Graph tags.  They add meta 
+data to your  -->
     <!-- site that facebook uses when your content is shared     -->
     <!-- over facebook.  You should fill these tags in with      -->
     <!-- your data.  To learn more about Open Graph, visit       -->
@@ -280,7 +280,7 @@ $app_name = idx($app_info, 'name', '');
       <?php } else { ?>
       <div>
         <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos,read_friendlists"></div>
+        <div class="fb-login-button" data-scope="user_likes,user_photos,user_events,read_friendlists"></div>
       </div>
       <?php } ?>
     </header>
@@ -346,9 +346,9 @@ $app_name = idx($app_info, 'name', '');
         <h3>Things you like</h3>
         <ul class="things">
           <?php
-            foreach ($friends_attending_event as $friend) {
+            foreach ($friends_attending_event as $frd) {
               // Extract the pieces of info we need from the requests above
-              $id = idx($friend, 'uid');
+              $id = idx($frd, 'uid');
 
               // This display's the object that the user liked as a link to
               // that object's page.
