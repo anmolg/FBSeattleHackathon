@@ -54,13 +54,12 @@ if ($user_id) {
     }
   }
 
-  // This fetches some things that you like . 'limit=*" only returns * values.
-  // To see the format of the data you are retrieving, use the "Graph API
-  // Explorer" which is at https://developers.facebook.com/tools/explorer/
+  // Get friends who are attending this particular event
   $friends_attending_event = $facebook->api(array(
     'method' => 'fql.query',
-    'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=205704069574071 and  rsvp_status="attending";'
+    'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=349479501839364 and  rsvp_status="attending";'
 ));
+  print_r($friends_attending_event);
 
   // This fetches 4 of your friends.
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
@@ -137,7 +136,7 @@ if ($user_id) {
   $app_using_friends = $facebook->api(array(
     'method' => 'fql.query',
     'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
-  ));
+));
 }
 
 // Fetch the basic info of the app that they are using
@@ -383,16 +382,12 @@ data to your  -->
       </div>
 
 	 <div class="list">
-        <h3>Things you like</h3>
+        <h3>Attendees to the event</h3>
         <ul class="things">
           <?php
             foreach ($attending_people_for_picked_event as $person) {
-              // Extract the pieces of info we need from the requests above
 				$id = idx($person, 'id');
 				$name = idx($person, 'name');
-
-              // This display's the object that the user liked as a link to
-              // that object's page.
           ?>
           <li>
 			<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
