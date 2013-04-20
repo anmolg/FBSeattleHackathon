@@ -72,9 +72,11 @@ if ($user_id) {
 	return count($individualEvent);
   }
   
+  /*
   foreach ($allEvents as $events) {
 	print_r(countAttendance($events));
   }
+  */
   $friend_id = 0;
   
   
