@@ -61,6 +61,7 @@ if ($user_id) {
     'method' => 'fql.query',
     'query' => 'select uid, rsvp_status from event_member where uid IN (SELECT uid2 FROM friend WHERE uid1=me()) AND eid=205704069574071 and  rsvp_status="attending";'
 ));
+  print_r($friends_attending_event);
 
   // This fetches 4 of your friends.
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
@@ -141,7 +142,6 @@ if ($user_id) {
     'method' => 'fql.query',
     'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
 ));
-  print_r ($app_using_friends);
 }
 
 // Fetch the basic info of the app that they are using
