@@ -277,7 +277,7 @@ data to your  -->
     </script>
 
       <?php if (isset($basic)) { ?>
-        <?php readfile("home_content.php") ?>
+        </div><!-- actual code here --></div>
       <?php } else { ?>
       <div>
         <p>Welcome to BubbleCrew, where we show you where your social bubbles have been and will be.</p>
