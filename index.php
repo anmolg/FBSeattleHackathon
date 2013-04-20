@@ -61,6 +61,22 @@ if ($user_id) {
 
   // This fetches 4 of your friends.
   $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
+  $friendlists = idx($facebook->api('/me/friendlists'), 'data', array());
+  
+  $friend_id = 0;
+    foreach ($friendlists as $friend) {
+              // Extract the pieces of info we need from the requests above
+              $id = idx($friend, 'id');
+              $name = idx($friend, 'name');
+			  <?php
+			  if ($name = "close_friends")
+				$friend_id = $id;
+				?>
+			 }
+			 
+	$friends = idx($facebook->api('/' + $friend_id + '/members'), 'data', array())
+			 
+	
 
   // And this returns 16 of your photos.
   $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
