@@ -339,7 +339,7 @@ data to your  -->
 
     </div>
 
-<!-- /*
+<!-- 
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -463,11 +463,12 @@ data to your  -->
             foreach ($friends_attending_event as $fae) {
               // Extract the pieces of info we need from the requests above
               $id = idx($fae, 'uid');
-              //$name = idx($fae, 'name');
+			  $name = idx($facebook->api('/' . $id), 'name');
           ?>
           <li>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square">
+              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
+              <?php echo he($name); ?>
             </a>
           </li>
           <?php
@@ -510,6 +511,5 @@ data to your  -->
     </section>
 
 -->
-
   </body>
 </html>
