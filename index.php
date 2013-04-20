@@ -96,7 +96,8 @@ if ($user_id) {
 			$_attendingFemale = $_attendingFemale + 1;
 		}
 	}
-	
+	print_r($_attendingMale);
+	print_r($_attendingFemale);
 	print_r($_attending);
 
   // And this returns 16 of your photos.
